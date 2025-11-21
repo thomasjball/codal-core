@@ -267,7 +267,7 @@ int MessageBus::deleteMarkedListeners()
             if (listener_deletion_callback)
                 listener_deletion_callback(t);
             
-                delete t;
+            delete t;
             removed++;
 
             continue;
