@@ -264,8 +264,9 @@ int MessageBus::deleteMarkedListeners()
             l = l->next;
 
             // If notification of deletion has been requested, invoke the listener deletion callback.
-            if (listener_deletion_callback)
-                listener_deletion_callback(t);error
+            if (listener_deletion_callback) {
+                listener_deletion_callback(t);
+            }
             
             delete t;
             removed++;
