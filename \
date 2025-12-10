@@ -1,0 +1,14 @@
+Revert "Merge branch 'master' of https://github.com/thomasjball/codal-core"
+
+This reverts commit 656b30c82c0366258d33536e6ef1a851cb8cc09e, reversing
+changes made to 9fb73aeb0f57715802ca03141a8a2c1bfffc06e5.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up to date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   source/drivers/MessageBus.cpp
+#
