@@ -303,14 +303,14 @@ void ST7735::startRAMWR(int cmd)
 
 void ST7735::sendDone(ST7735 *st)
 {
+    Event(DEVICE_ID_DISPLAY, 101);
     st->inProgressLock.notify();
 }
 
-
-/**
-* Deprecated; no longer neccessary. sendIndexedImage handles this.
-*/
-void ST7735::waitForSendDone() {}
+void ST7735::waitForSendDone() {
+    if (inProgressLock.getWaitCount() < 1)
+        fiber_wait_for_event(DEVICE_ID_DISPLAY, 101);
+}
 
 int ST7735::setSleep(bool sleepMode)
 {
