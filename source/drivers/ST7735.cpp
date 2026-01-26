@@ -269,7 +269,7 @@ void ST7735::sendColorsStep(ST7735 *st)
         if (work->srcLeft == 0)
         {
             st->endCS();
-            st->sendDone(st);
+            Event(DEVICE_ID_DISPLAY, 100);
         }
         else
         {
@@ -301,14 +301,14 @@ void ST7735::startRAMWR(int cmd)
     beginCS();
 }
 
-void ST7735::sendDone(ST7735 *st)
+void ST7735::sendDone(Event)
 {
     Event(DEVICE_ID_DISPLAY, 101);
     st->inProgressLock.notify();
 }
 
 void ST7735::waitForSendDone() {
-    if (inProgressLock.getWaitCount() < 1)
+    if (inProgressLock.getLockedCount() < 1)
         fiber_wait_for_event(DEVICE_ID_DISPLAY, 101);
 }
 
@@ -352,6 +352,8 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width, unsigned height
         else
             for (int i = 0; i < 256; ++i)
                 work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
+
+        EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this, &ST7735::sendDone);
     }
 
     inProgressLock.wait();

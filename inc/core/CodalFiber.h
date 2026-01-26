@@ -397,6 +397,11 @@ namespace codal
          * Determine the number of fibers currently blocked on this lock
          */
         int getWaitCount();
+
+        /**
+         * Determine the current lock count
+         */
+        int getLockedCount() { return locked; }
     };
 }
 
