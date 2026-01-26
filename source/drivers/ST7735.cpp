@@ -304,7 +304,7 @@ void ST7735::startRAMWR(int cmd)
 void ST7735::sendDone(Event)
 {
     Event(DEVICE_ID_DISPLAY, 101);
-    st->inProgressLock.notify();
+    inProgressLock.notify();
 }
 
 void ST7735::waitForSendDone() {
