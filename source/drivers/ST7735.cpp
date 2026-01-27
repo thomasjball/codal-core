@@ -144,6 +144,7 @@ struct ST7735WorkBuffer
     uint8_t dataBuf[DATABUFSIZE];
     const uint8_t *srcPtr;
     unsigned x;
+    bool inProgress;
     uint32_t *paletteTable;
     unsigned srcLeft;
     uint32_t expPalette[256];
@@ -269,7 +270,7 @@ void ST7735::sendColorsStep(ST7735 *st)
         if (work->srcLeft == 0)
         {
             st->endCS();
-            Event(DEVICE_ID_DISPLAY, 100);
+            st->sendDone();
         }
         else
         {
@@ -301,15 +302,16 @@ void ST7735::startRAMWR(int cmd)
     beginCS();
 }
 
-void ST7735::sendDone(Event)
+void ST7735::sendDone()
 {
-    Event(DEVICE_ID_DISPLAY, 101);
+    work->inProgress = false;
     inProgressLock.notify();
 }
 
 void ST7735::waitForSendDone() {
-    if (inProgressLock.getLockedCount() < 1)
-        fiber_wait_for_event(DEVICE_ID_DISPLAY, 101);
+    while(work && work->inProgress) {
+        fiber_sleep(5);
+    } 
 }
 
 int ST7735::setSleep(bool sleepMode)
@@ -352,8 +354,6 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width, unsigned height
         else
             for (int i = 0; i < 256; ++i)
                 work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
-
-        EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this, &ST7735::sendDone);
     }
 
     inProgressLock.wait();
@@ -361,7 +361,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width, unsigned height
         return DEVICE_BUSY;
 
     work->paletteTable = palette;
-
+    work->inProgress = true;
     work->srcPtr = src;
     work->width = width;
     work->height = height;

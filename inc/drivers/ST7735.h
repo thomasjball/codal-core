@@ -72,7 +72,7 @@ protected:
     void sendBytes(unsigned num);
     void startRAMWR(int cmd = 0);
 
-    void sendDone(Event);
+    void sendDone();
     static void sendColorsStep(ST7735 *st);
 
 public:
