@@ -310,7 +310,7 @@ void ST7735::sendDone()
 
 void ST7735::waitForSendDone() {
     while(work && work->inProgress) {
-        fiber_sleep(5);
+        fiber_sleep(2);
     } 
 }
 
