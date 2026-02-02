@@ -144,7 +144,7 @@ struct ST7735WorkBuffer
     uint8_t dataBuf[DATABUFSIZE];
     const uint8_t *srcPtr;
     unsigned x;
-    bool inProgress;
+    volatile bool inProgress;
     uint32_t *paletteTable;
     unsigned srcLeft;
     uint32_t expPalette[256];
@@ -310,7 +310,7 @@ void ST7735::sendDone()
 
 void ST7735::waitForSendDone() {
     while(work && work->inProgress) {
-        fiber_sleep(2);
+        schedule();
     } 
 }
 
